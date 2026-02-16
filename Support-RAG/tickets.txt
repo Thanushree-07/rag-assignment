@@ -1,0 +1,23 @@
+Ticket 101 – Login Failure
+User unable to login due to incorrect password.
+Resolution: Reset password and clear browser cache.
+
+Ticket 102 – Payment Failed
+Payment declined during checkout.
+Resolution: Ask user to verify card details or try another payment method.
+
+Ticket 103 – App Crash
+Application crashes immediately after launch.
+Resolution: Reinstall app and update to latest version.
+
+Ticket 104 – Account Locked
+User account locked after multiple failed login attempts.
+Resolution: Unlock account and verify identity.
+
+Ticket 105 – Email Not Received
+User did not receive verification email.
+Resolution: Resend email and ask user to check spam folder.
+
+Ticket 106 – Slow Performance
+Application running very slowly.
+Resolution: Clear cache and check internet connection.
