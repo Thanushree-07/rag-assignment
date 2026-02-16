@@ -4,13 +4,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# ---------- LOAD DOCUMENT ----------
+
 def load_document(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
 
-# ---------- SEMANTIC CHUNKING + OVERLAP ----------
 def split_text(text):
 
     sections = text.split("\n\n")  # split by paragraph meaning
@@ -20,7 +19,7 @@ def split_text(text):
     for i in range(len(sections)):
         chunk = sections[i]
 
-        # overlap with next section
+    
         if i + 1 < len(sections):
             chunk += " " + sections[i + 1]
 
@@ -29,7 +28,7 @@ def split_text(text):
     return chunks
 
 
-# ---------- RETRIEVE ----------
+
 def retrieve(query, vectorizer, vectors, chunks):
 
     query_vector = vectorizer.transform([query])
@@ -47,7 +46,7 @@ def retrieve(query, vectorizer, vectors, chunks):
     return chunks[best_index]
 
 
-# ---------- GENERATE (EXTRACTIVE MODE) ----------
+
 def generate_answer(context, question):
 
     prompt = f"""
@@ -81,7 +80,7 @@ Answer:
     return response["message"]["content"]
 
 
-# ---------- MAIN ----------
+
 document = load_document("employee.txt")
 
 chunks = split_text(document)
