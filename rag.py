@@ -4,19 +4,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# ---------- LOAD DOCUMENT ----------
 def load_document(path):
     with open(path, "r", encoding="utf-8") as file:
         return file.read()
 
 
-# ---------- SPLIT TEXT ----------
 def split_text(text, chunk_size=40):
     words = text.split()
     return [" ".join(words[i:i+chunk_size]) for i in range(0,len(words),chunk_size)]
 
 
-# ---------- RETRIEVE ----------
 def retrieve(query, vectorizer, vectors, chunks):
     query_vector = vectorizer.transform([query])
     similarities = cosine_similarity(query_vector, vectors)[0]
@@ -26,14 +23,12 @@ def retrieve(query, vectorizer, vectors, chunks):
 
     print("Similarity:", best_score)
 
-    # STRICT FILTER
     if best_score < 0.30:
         return None
 
     return chunks[best_index]
 
 
-# ---------- GENERATE ----------
 def generate_answer(context, question):
 
     prompt = f"""
@@ -56,7 +51,6 @@ Question:
     return response["message"]["content"]
 
 
-# ---------- MAIN ----------
 document = load_document("docs.txt")
 
 chunks = split_text(document)
@@ -74,7 +68,6 @@ while True:
 
     context = retrieve(question, vectorizer, vectors, chunks)
 
-    # 🚫 BLOCK unrelated questions BEFORE model
     if context is None:
         print("\nAnswer: Answer not found in documentation.\n")
         continue
