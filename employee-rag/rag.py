@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-
 def load_document(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
@@ -13,7 +12,6 @@ def load_document(path):
 def split_text(text):
 
     sections = text.split("\n\n")
-
     chunks = []
 
     for i in range(len(sections)):
@@ -27,7 +25,7 @@ def split_text(text):
     return chunks
 
 
-
+# ---------- RETRIEVE MOST RELEVANT SECTION ----------
 def retrieve(query, vectorizer, vectors, chunks):
 
     query_vector = vectorizer.transform([query])
@@ -36,7 +34,7 @@ def retrieve(query, vectorizer, vectors, chunks):
     best_score = max(similarities)
     best_index = similarities.argmax()
 
-    print("Similarity:", best_score)
+    print("Similarity:", round(best_score, 3))
 
     if best_score < 0.20:
         return None
@@ -44,22 +42,22 @@ def retrieve(query, vectorizer, vectors, chunks):
     return chunks[best_index]
 
 
-
+# ---------- GENERATE ANSWER USING OLLAMA ----------
 def generate_answer(context, question):
 
     prompt = f"""
-You are a legal assistant.
+You are an employee policy assistant.
 
 TASK:
-Answer using ONLY the contract.
+Answer using ONLY the employee handbook.
 
 RULES:
-- Use only given contract text.
+- Use only given document text.
 - Do NOT use outside knowledge.
 - If answer not present say:
-  Not found in contract.
+  Not found in employee handbook.
 
-Contract:
+Employee Handbook:
 {context}
 
 Question:
@@ -69,24 +67,25 @@ Answer:
 """
 
     response = ollama.chat(
-        model="phi",
-        messages=[{"role":"user","content":prompt}]
+        model="phi3",
+        messages=[{"role": "user", "content": prompt}]
     )
 
     return response["message"]["content"]
 
 
-
-document = load_document("legal.txt")
+# ---------- MAIN PROGRAM ----------
+document = load_document("employee.txt")
 
 chunks = split_text(document)
 
 vectorizer = TfidfVectorizer()
 vectors = vectorizer.fit_transform(chunks)
 
-print("\nLegal Assistant Ready\n")
+print("\nEmployee Policy Assistant Ready\n")
 
 while True:
+
     question = input("Ask: ")
 
     if question.lower() == "exit":
@@ -95,7 +94,7 @@ while True:
     context = retrieve(question, vectorizer, vectors, chunks)
 
     if context is None:
-        print("\nNot found in contract.\n")
+        print("\nNot found in employee handbook.\n")
         continue
 
     answer = generate_answer(context, question)
